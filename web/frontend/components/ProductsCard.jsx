@@ -51,7 +51,10 @@ export function ProductsCard() {
   // };
   const handlePopulate = async () => {
 
-    
+    const orders = await fetch("/api/orders")
+    const data = await orders.json()
+
+    console.log(data)
   };
 
   return (

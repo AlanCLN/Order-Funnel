@@ -2,27 +2,27 @@
 
 client_id = "3d73bc918837e31e3d45291ac0289ad9"
 name = "Order Funnel"
-application_url = "https://nails-scientists-industrial-treat.trycloudflare.com"
+application_url = "https://taxes-persian-offline-incoming.trycloudflare.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "order-funnel.myshopify.com"
+dev_store_url = "quickstart-84da0cc9.myshopify.com"
 include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_orders,write_orders,write_products"
+scopes = "read_orders,write_fulfillments,write_orders"
 
 [auth]
 redirect_urls = [
-  "https://nails-scientists-industrial-treat.trycloudflare.com/auth/callback",
-  "https://nails-scientists-industrial-treat.trycloudflare.com/auth/shopify/callback",
-  "https://nails-scientists-industrial-treat.trycloudflare.com/api/auth/callback"
+  "https://taxes-persian-offline-incoming.trycloudflare.com/auth/callback",
+  "https://taxes-persian-offline-incoming.trycloudflare.com/auth/shopify/callback",
+  "https://taxes-persian-offline-incoming.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
-api_version = "2024-01"
+api_version = "2023-04"
 
 [pos]
 embedded = false

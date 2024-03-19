@@ -1,93 +1,106 @@
 import {
-  Card,
   Page,
   Layout,
-  TextContainer,
+  LegacyCard,
+  ButtonGroup,
   Image,
-  Stack,
   Link,
   Text,
+  Button
 } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
-import { useTranslation, Trans } from "react-i18next";
+import { useAppQuery, useAuthenticatedFetch } from "../hooks";
 
-import { trophyImage } from "../assets";
+import { useState } from "react";
 
-import { ProductsCard } from "../components";
+import { ProductsCard } from "../components/ProductsCard";
+import { FetchOrdersButton } from "../components/FetchOrdersButton";
+
+import { createPullsheetUrl } from "../scripts/pullsheet";
+import { createPackingSlipUrl } from "../scripts/packing_slip";
+
+
 
 export default function HomePage() {
-  const { t } = useTranslation();
+
+  const fetch = useAuthenticatedFetch()
+
+  const [ordersData, setOrdersData] = useState([])
+  const updateOrdersData = data => {
+    setOrdersData(data)
+  }
+
+
+  async function createOneFulfillment() {
+    const dataArray = ordersData.data
+
+    if (dataArray) {
+      let orderId = dataArray[0].id
+      const response = await fetch(`/api/order/${orderId}`, {
+        method: 'PUT',
+      })
+      const responseData = await response.json()
+      console.log(responseData)
+    } else {
+      console.log("No orders data")
+    }
+  }
+
+  
+  const createAndClickAnchorElement = (url, fileName) => {
+
+    // Create anchor element
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', fileName);
+    document.body.appendChild(link);
+
+    // Programmatically click on the anchor element to trigger download
+    link.click();
+
+    // Clean up
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+
+
+  function handlePullsheetDownload() {
+    const pullsheetUrl = createPullsheetUrl(ordersData)
+
+    createAndClickAnchorElement(pullsheetUrl, 'pullsheet.csv')
+  }
+
+
+  async function handlePackingSlipPreview() {
+    const packingSlipUrl = await createPackingSlipUrl(ordersData)
+
+    // createAndClickAnchorElement(packingSlipUrl, 'packing_slip.pdf')
+  }
+
   return (
-    <Page narrowWidth>
-      <TitleBar title={t("HomePage.title")} primaryAction={null} />
+    <Page
+    title="Orders"
+    primaryAction={<FetchOrdersButton updateOrdersData={updateOrdersData}/>}
+    fullWidth>
       <Layout>
         <Layout.Section>
-          <Card sectioned>
-            <Stack
-              wrap={false}
-              spacing="extraTight"
-              distribution="trailing"
-              alignment="center"
-            >
-              <Stack.Item fill>
-                <TextContainer spacing="loose">
-                  <Text as="h2" variant="headingMd">
-                    {t("HomePage.heading")}
-                  </Text>
-                  <p>
-                    <Trans
-                      i18nKey="HomePage.yourAppIsReadyToExplore"
-                      components={{
-                        PolarisLink: (
-                          <Link url="https://polaris.shopify.com/" external />
-                        ),
-                        AdminApiLink: (
-                          <Link
-                            url="https://shopify.dev/api/admin-graphql"
-                            external
-                          />
-                        ),
-                        AppBridgeLink: (
-                          <Link
-                            url="https://shopify.dev/apps/tools/app-bridge"
-                            external
-                          />
-                        ),
-                      }}
-                    />
-                  </p>
-                  <p>{t("HomePage.startPopulatingYourApp")}</p>
-                  <p>
-                    <Trans
-                      i18nKey="HomePage.learnMore"
-                      components={{
-                        ShopifyTutorialLink: (
-                          <Link
-                            url="https://shopify.dev/apps/getting-started/add-functionality"
-                            external
-                          />
-                        ),
-                      }}
-                    />
-                  </p>
-                </TextContainer>
-              </Stack.Item>
-              <Stack.Item>
-                <div style={{ padding: "0 20px" }}>
-                  <Image
-                    source={trophyImage}
-                    alt={t("HomePage.trophyAltText")}
-                    width={120}
-                  />
-                </div>
-              </Stack.Item>
-            </Stack>
-          </Card>
-        </Layout.Section>
-        <Layout.Section>
-          <ProductsCard />
+          <LegacyCard sectioned>
+            <ButtonGroup spacing="loose">
+              <Button primary onClick={() => console.log(ordersData)}>{`Export Orders CSV (${ordersData.length})`}</Button>
+              <Button primary onClick={handlePullsheetDownload}>Pullsheet</Button>
+              <Button primary onClick={handlePackingSlipPreview}>Packing Slip</Button>
+              <Button primary>Export Shipping</Button>
+              <Button primary>Import Tracking</Button>
+              <Button primary onClick={createOneFulfillment}>Mark as Shipped (Testing)</Button>
+              
+            </ButtonGroup>
+          </LegacyCard>
         </Layout.Section>
       </Layout>
+
+
+
     </Page>
   );
 }

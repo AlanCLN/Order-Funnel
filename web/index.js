@@ -57,6 +57,69 @@ app.get("/api/products/create", async (_req, res) => {
   res.status(status).send({ success: status === 200, error });
 });
 
+app.get("/api/orders", async (_req, res) => {
+  const ordersData = await shopify.api.rest.Order.all({
+    session: res.locals.shopify.session,
+    fulfillment_status: "unfulfilled",
+    fields:
+      "billing_address,current_subtotal_price,current_total_discounts,current_total_price,current_total_tax,fulfillment_status,id,line_items,name,note,order_number,shipping_address,subtotal_price,tags,total_discounts,total_line_items_price,total_price,total_tax,test",
+  });
+
+  res.status(200).send(ordersData);
+});
+
+app.post("/api/fulfillments", async (req, res) => {
+  const fulfillment = new shopify.api.rest.Fulfillment({
+    session: res.locals.shopify.session,
+  });
+});
+
+app.post("/api/fulfillment/:orderId", async (req, res) => {
+  const fulfillment = new shopify.api.rest.Fulfillment({
+    session: res.locals.shopify.session,
+  });
+
+  // let status = 200;
+  // let error = null;
+
+  // try {
+  //   await productCreator(res.locals.shopify.session);
+  // } catch (e) {
+  //   console.log(`Failed to process products/create: ${e.message}`);
+  //   status = 500;
+  //   error = e.message;
+  // }
+  // res.status(status).send({ success: status === 200, error });
+
+  const orderId = parseInt(req.params.orderId);
+  fulfillment.order_id = orderId;
+
+  // await fulfillment.save({
+  //   update: true,
+  // });
+  res.status(200).send(fulfillment);
+});
+
+app.put("/api/order/:orderId", async (req, res) => {
+  const orderId = req.params.orderId;
+
+  const order = await shopify.api.rest.Order.find({
+    session: res.locals.shopify.session,
+    id: orderId,
+  });
+
+  if (order) {
+    order.note = "Testing note";
+
+    await order.save({
+      update: true,
+    });
+    res.status(200).send(order);
+  } else {
+    res.status(404).send("No order found");
+  }
+});
+
 app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIC_PATH, { index: false }));
 
