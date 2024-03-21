@@ -2,7 +2,7 @@
 
 client_id = "3d73bc918837e31e3d45291ac0289ad9"
 name = "Order Funnel"
-application_url = "https://taxes-persian-offline-incoming.trycloudflare.com"
+application_url = "https://permalink-consider-dubai-demographic.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_orders,write_fulfillments,write_orders"
 
 [auth]
 redirect_urls = [
-  "https://taxes-persian-offline-incoming.trycloudflare.com/auth/callback",
-  "https://taxes-persian-offline-incoming.trycloudflare.com/auth/shopify/callback",
-  "https://taxes-persian-offline-incoming.trycloudflare.com/api/auth/callback"
+  "https://permalink-consider-dubai-demographic.trycloudflare.com/auth/callback",
+  "https://permalink-consider-dubai-demographic.trycloudflare.com/auth/shopify/callback",
+  "https://permalink-consider-dubai-demographic.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

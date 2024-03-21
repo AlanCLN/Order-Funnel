@@ -67,12 +67,12 @@ function sortPullsheets(allVariantPullsheets) {
   }
 }
 
-function findSetName(sku) {
+export function findSetName(sku) {
   const split_sku = sku.split("-");
   return split_sku[0];
 }
 
-function findVariant(variant) {
+export function findVariant(variant) {
   if (!variant) return "None";
 
   const conditions = [
