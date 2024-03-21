@@ -1,9 +1,10 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 RUN echo "Docker Build Starting..."
 WORKDIR /app
 COPY . /app
 RUN chmod +x /app/build-and-serve-app.sh
+RUN npm install
 RUN cd web && npm install
 RUN node -v
 RUN cd web/frontend && npm install
