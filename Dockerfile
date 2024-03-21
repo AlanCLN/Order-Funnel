@@ -4,11 +4,9 @@ WORKDIR /app
 COPY . /app
 RUN chmod +x /app/build-and-serve-app.sh
 RUN pwd && ls
-RUN echo "CD into web and npm install"
 RUN cd web && npm install
 RUN pwd && ls 
-RUN echo "CD into frontend and npm install"
-RUN cd frontend && npm install
+RUN cd web/frontend && npm install
 RUN pwd
 CMD ["sh", "/app/build-and-serve-app.sh"]
 EXPOSE 8081
