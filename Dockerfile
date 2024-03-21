@@ -4,8 +4,10 @@ WORKDIR /app
 COPY . /app
 RUN chmod +x /app/build-and-serve-app.sh
 RUN pwd
-RUN cd /app/web/frontend && npm install
-RUN cd /app/web && npm install
+RUN cd web && npm install
+RUN pwd
+RUN cd frontend && npm install
+RUN pwd
 CMD ["sh", "/app/build-and-serve-app.sh"]
 EXPOSE 8081
 RUN echo "Docker Build Complete."
