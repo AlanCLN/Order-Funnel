@@ -1,11 +1,10 @@
 FROM node:18-alpine
 
-RUN echo "Docker Build Starting..."
-WORKDIR /app
-COPY . /app
-RUN chmod +x /app/build-and-serve-app.sh
-RUN cd /app/web/frontend && npm install
-RUN cd /app/web && npm install
-CMD ["sh", "/app/build-and-serve-app.sh"]
+ARG SHOPIFY_API_KEY
+ENV SHOPIFY_API_KEY=$SHOPIFY_API_KEY
 EXPOSE 8081
-RUN echo "Docker Build Complete."
+WORKDIR /app
+COPY web .
+RUN npm install
+RUN cd frontend && npm install && npm run build
+CMD ["npm", "run", "serve"]
