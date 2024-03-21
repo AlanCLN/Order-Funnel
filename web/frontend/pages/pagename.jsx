@@ -6,7 +6,7 @@ export default function PageName() {
   const { t } = useTranslation();
   return (
     <Page>
-      <TitleBar
+      {/* <TitleBar
         title={t("PageName.title")}
         primaryAction={{
           content: t("PageName.primaryAction"),
@@ -18,37 +18,7 @@ export default function PageName() {
             onAction: () => console.log("Secondary action"),
           },
         ]}
-      />
-      <Layout>
-        <Layout.Section>
-          <Card sectioned>
-            <Text variant="headingMd" as="h2">
-              {t("PageName.heading")}
-            </Text>
-            <TextContainer>
-              <p>{t("PageName.body")}</p>
-            </TextContainer>
-          </Card>
-          <Card sectioned>
-            <Text variant="headingMd" as="h2">
-              {t("PageName.heading")}
-            </Text>
-            <TextContainer>
-              <p>{t("PageName.body")}</p>
-            </TextContainer>
-          </Card>
-        </Layout.Section>
-        <Layout.Section secondary>
-          <Card sectioned>
-            <Text variant="headingMd" as="h2">
-              {t("PageName.heading")}
-            </Text>
-            <TextContainer>
-              <p>{t("PageName.body")}</p>
-            </TextContainer>
-          </Card>
-        </Layout.Section>
-      </Layout>
+      /> */}
     </Page>
   );
 }
