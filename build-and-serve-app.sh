@@ -5,6 +5,7 @@ pwd
 cd /app/web/frontend
 pwd
 ls -lthra
+npm install
 npm run build
 echo "Frontend Build Complete."
 echo "Backend Preparing to Serve Requests..."
