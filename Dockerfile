@@ -6,7 +6,6 @@ COPY . /app
 RUN chmod +x /app/build-and-serve-app.sh
 RUN npm install
 RUN cd web && npm install
-RUN node -v
 RUN cd web/frontend && npm install
 CMD ["sh", "/app/build-and-serve-app.sh"]
 EXPOSE 8081

@@ -73,7 +73,7 @@ export function findSetName(sku) {
 }
 
 export function findVariant(variant) {
-  if (!variant) return "None";
+  if (!variant) return "No Variant";
 
   const conditions = [
     "Near Mint",

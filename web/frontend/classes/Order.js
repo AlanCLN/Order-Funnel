@@ -45,8 +45,12 @@ export default class Order {
     return this._totalQuantity;
   }
 
+  getTotalLineItemsPrice() {
+    return this.totalLineItemsPrice;
+  }
+
   requireTracking() {
-    return subtotal >= 25;
+    return this.subtotal >= 25 || this._totalQuantity >= 30;
   }
 
   sort() {
@@ -57,7 +61,7 @@ export default class Order {
       "Heavily Played": [],
       Damaged: [],
       Other: [],
-      None: [],
+      "No Variant": [],
     };
 
     for (let line_item of this._lineItems) {

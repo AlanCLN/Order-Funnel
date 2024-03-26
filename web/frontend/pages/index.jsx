@@ -11,13 +11,13 @@ import {
 import { TitleBar } from "@shopify/app-bridge-react";
 import { useAppQuery, useAuthenticatedFetch } from "../hooks";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { ProductsCard } from "../components/ProductsCard";
 import { FetchOrdersButton } from "../components/FetchOrdersButton";
 
 import { createPullsheetUrl } from "../scripts/pullsheet";
-import { createPackingSlipUrl } from "../scripts/packing_slip";
+import { createPackingSlipUrl, parseOrdersData } from "../scripts/packing_slip";
 
 
 
@@ -26,8 +26,59 @@ export default function HomePage() {
   const fetch = useAuthenticatedFetch()
 
   const [ordersData, setOrdersData] = useState([])
+  const [trackedData, setTrackedData] = useState([])
+  const [oneStampUntrackedData, setOneStampUntrackedData] = useState([])  // 1-6 qty
+  const [twoStampUntrackedData, setTwoStampUntrackedData] = useState([])  // 7-12 qty
+  const [threeStampUntrackedData, setThreeStampUntrackedData] = useState([])  // 13-18 qty
+  const [fourStampUntrackedData, setFourStampUntrackedData] = useState([])  // 19-20 qty
+  const [fiveStampUntrackedData, setFiveStampUntrackedData] = useState([]) // 21-29 qty
+
+  
+
+
   const updateOrdersData = data => {
     setOrdersData(data)
+  }
+
+  useEffect(() => {
+    if (ordersData.length > 0) {
+      const order_instances = parseOrdersData(ordersData)
+      separateOrdersData(order_instances)
+    }
+
+  }, [ordersData])
+
+  function separateOrdersData(order_instances) {
+    const tracked = []
+    const oneStamp = []
+    const twoStamp = []
+    const threeStamp = []
+    const fourStamp = []
+    const fiveStamp = []
+
+    for (const order_instance of order_instances) {
+      if (order_instance.requireTracking()) {
+        tracked.push(order_instance)
+      } else if (order_instance.getTotalQuantity() <= 6) {
+        oneStamp.push(order_instance)
+      } else if (order_instance.getTotalQuantity() <= 13) {
+        twoStamp.push(order_instance)
+      } else if (order_instance.getTotalQuantity() <= 19) {
+        threeStamp.push(order_instance)
+      } else if (order_instance.getTotalQuantity() <= 21) {
+        fourStamp.push(order_instance)
+      } else {
+        fiveStamp.push(order_instance)
+      }
+    }
+
+    setTrackedData(tracked)
+    setOneStampUntrackedData(oneStamp)
+    setTwoStampUntrackedData(twoStamp)
+    setThreeStampUntrackedData(threeStamp)
+    setFourStampUntrackedData(fourStamp)
+    setFiveStampUntrackedData(fiveStamp)
+
   }
 
 
@@ -72,11 +123,14 @@ export default function HomePage() {
   }
 
 
-  async function handlePackingSlipPreview() {
+  async function handlePackingSlipDownload(ordersData, fileName) {
     const packingSlipUrl = await createPackingSlipUrl(ordersData)
 
-    // createAndClickAnchorElement(packingSlipUrl, 'packing_slip.pdf')
+    // createAndClickAnchorElement(packingSlipUrl, `packing_slip_${fileName}.pdf`)
+    window.open(packingSlipUrl)
   }
+
+
 
   return (
     <Page
@@ -89,10 +143,15 @@ export default function HomePage() {
             <ButtonGroup spacing="loose">
               <Button primary onClick={() => console.log(ordersData)}>{`Export Orders CSV (${ordersData.length})`}</Button>
               <Button primary onClick={handlePullsheetDownload}>Pullsheet</Button>
-              <Button primary onClick={handlePackingSlipPreview}>Packing Slip</Button>
-              <Button primary>Export Shipping</Button>
+              <Button primary disabled={trackedData.length == 0} onClick={() => handlePackingSlipDownload(trackedData, 'tracked')}>Track Packing Slip </Button>
+              <Button primary disabled={oneStampUntrackedData.length == 0} onClick={() => handlePackingSlipDownload(oneStampUntrackedData, '1-6')}>Untrack Packing Slip 1-6 </Button>
+              <Button primary disabled={twoStampUntrackedData.length == 0} onClick={() => handlePackingSlipDownload(twoStampUntrackedData, '7-12')}>Untrack Packing Slip 7-12 </Button>
+              <Button primary disabled={threeStampUntrackedData.length == 0} onClick={() => handlePackingSlipDownload(threeStampUntrackedData, '13-18')}>Untrack Packing Slip 13-18 </Button>
+              <Button primary disabled={fourStampUntrackedData.length == 0} onClick={() => handlePackingSlipDownload(fourStampUntrackedData, '19-20')}>Untrack Packing Slip 19-20 </Button>
+              <Button primary disabled={fiveStampUntrackedData.length == 0} onClick={() => handlePackingSlipDownload(fiveStampUntrackedData, '21-29')}>Untrack Packing Slip 21-29 </Button>
+              {/* <Button primary>Export Shipping</Button>
               <Button primary>Import Tracking</Button>
-              <Button primary onClick={createOneFulfillment}>Mark as Shipped (Testing)</Button>
+              <Button primary onClick={createOneFulfillment}>Mark as Shipped (Testing)</Button> */}
               
             </ButtonGroup>
           </LegacyCard>

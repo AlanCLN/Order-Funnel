@@ -2,7 +2,7 @@
 
 client_id = "3d73bc918837e31e3d45291ac0289ad9"
 name = "Order Funnel"
-application_url = "https://cloud-winning-polo-merger.trycloudflare.com"
+application_url = "https://greatest-fancy-newsletter-grab.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_orders,write_fulfillments,write_orders"
 
 [auth]
 redirect_urls = [
-  "https://cloud-winning-polo-merger.trycloudflare.com/auth/callback",
-  "https://cloud-winning-polo-merger.trycloudflare.com/auth/shopify/callback",
-  "https://cloud-winning-polo-merger.trycloudflare.com/api/auth/callback"
+  "https://greatest-fancy-newsletter-grab.trycloudflare.com/auth/callback",
+  "https://greatest-fancy-newsletter-grab.trycloudflare.com/auth/shopify/callback",
+  "https://greatest-fancy-newsletter-grab.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
