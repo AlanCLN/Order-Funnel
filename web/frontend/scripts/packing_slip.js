@@ -10,6 +10,7 @@ export async function createPackingSlipUrl(order_instances) {
   const doc = new jsPDF({ putOnlyUsedFonts: true });
   let firstPage = true;
   const leftMargin = 15;
+  const offsetY = 10;
 
   for (const order_instance of order_instances) {
     // jsPDF creates the first page automatically. We only add a new page after we utilize the first page.
@@ -38,7 +39,7 @@ export async function createPackingSlipUrl(order_instances) {
         `Order ID: #${orderId}`,
       ],
       leftMargin,
-      20
+      20 + offsetY
     );
     const headers = [
       {
@@ -52,9 +53,9 @@ export async function createPackingSlipUrl(order_instances) {
       {
         id: "name",
         name: "name",
-        prompt: "Name",
+        prompt: "Product Name",
         width: 180,
-        align: "center",
+        align: "left",
         padding: 0,
       },
       {
@@ -91,7 +92,7 @@ export async function createPackingSlipUrl(order_instances) {
       data.push(row);
     }
 
-    doc.table(leftMargin, 55, data, headers, tableConfig);
+    doc.table(leftMargin, 55 + offsetY, data, headers, tableConfig);
     doc.cell(
       leftMargin,
       0,
@@ -150,6 +151,7 @@ export function parseOrdersData(ordersData) {
       const lineItemQuantity = line_item.quantity;
       const lineItemPrice = line_item.price;
 
+      const category = line_item.vendor === "Yu-Gi-Oh!" ? "Yu-Gi-Oh!" : "Other";
       const setName = findSetName(line_item.sku);
       const variant = findVariant(line_item.variant_title);
 
@@ -158,7 +160,8 @@ export function parseOrdersData(ordersData) {
         lineItemQuantity,
         lineItemPrice,
         setName,
-        variant
+        variant,
+        category
       );
 
       orderInstance.addLineItems(newLineItem);

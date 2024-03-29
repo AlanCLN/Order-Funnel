@@ -1,7 +1,7 @@
 import { makeCSV, makeURL } from "./file_scripts";
 import Pullsheet from "../classes/Pullsheet";
 
-export function createPullsheetUrl(ordersData) {
+export function createPullsheetUrl(ordersData, pullsheetCategory) {
   let allVariantPullsheets = {};
 
   allVariantPullsheets["Near Mint"] = new Pullsheet("Near Mint");
@@ -10,11 +10,19 @@ export function createPullsheetUrl(ordersData) {
   allVariantPullsheets["Heavily Played"] = new Pullsheet("Heavily Played");
   allVariantPullsheets["Damaged"] = new Pullsheet("Damaged");
   allVariantPullsheets["Other"] = new Pullsheet("Other");
-  allVariantPullsheets["None"] = new Pullsheet("None");
+  allVariantPullsheets["No Variant"] = new Pullsheet("No Variant");
 
   for (let order of ordersData) {
     for (let line_item of order.line_items) {
       if (!line_item) {
+        continue;
+      }
+
+      const lineItemVendor = line_item.vendor;
+
+      if (pullsheetCategory === "Yu-Gi-Oh!" && lineItemVendor !== "Yu-Gi-Oh!") {
+        continue;
+      } else if (pullsheetCategory === "other" && lineItemVendor === "Yu-Gi-Oh!") {
         continue;
       }
 
@@ -29,6 +37,7 @@ export function createPullsheetUrl(ordersData) {
         setName,
       };
       let pullsheet_instance = allVariantPullsheets[variant];
+
       pullsheet_instance.addLineItem(lineItem);
     }
   }
@@ -38,7 +47,6 @@ export function createPullsheetUrl(ordersData) {
 
   const csvString = makeCSV(combinedPullsheet);
   const url = makeURL(csvString, "csv");
-
   return url;
 }
 
@@ -56,6 +64,7 @@ function combineAllPullsheetContent(allVariantPullsheets) {
 
       content.push(row);
     }
+    content.push([""]);
   }
 
   return content;

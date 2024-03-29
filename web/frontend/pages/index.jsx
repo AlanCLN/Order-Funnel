@@ -83,12 +83,12 @@ export default function HomePage() {
 
 
   async function createOneFulfillment() {
-    const dataArray = ordersData.data
+    const dataArray = ordersData
 
     if (dataArray) {
       let orderId = dataArray[0].id
-      const response = await fetch(`/api/order/${orderId}`, {
-        method: 'PUT',
+      const response = await fetch(`/api/fulfillment/${orderId}`, {
+        method: 'POST',
       })
       const responseData = await response.json()
       console.log(responseData)
@@ -116,8 +116,9 @@ export default function HomePage() {
 
 
 
-  function handlePullsheetDownload() {
-    const pullsheetUrl = createPullsheetUrl(ordersData)
+  function handlePullsheetDownload(pullsheetCategory) {
+
+    const pullsheetUrl = createPullsheetUrl(ordersData, pullsheetCategory)
 
     createAndClickAnchorElement(pullsheetUrl, 'pullsheet.csv')
   }
@@ -142,7 +143,8 @@ export default function HomePage() {
           <LegacyCard sectioned>
             <ButtonGroup spacing="loose">
               <Button primary onClick={() => console.log(ordersData)}>{`Export Orders CSV (${ordersData.length})`}</Button>
-              <Button primary onClick={handlePullsheetDownload}>Pullsheet</Button>
+              <Button primary onClick={() => handlePullsheetDownload('Yu-Gi-Oh!')}>YGO Pullsheet</Button>
+              <Button primary onClick={() => handlePullsheetDownload('other')}>Other Pullsheet</Button>
               <Button primary disabled={trackedData.length == 0} onClick={() => handlePackingSlipDownload(trackedData, 'tracked')}>Track Packing Slip </Button>
               <Button primary disabled={oneStampUntrackedData.length == 0} onClick={() => handlePackingSlipDownload(oneStampUntrackedData, '1-6')}>Untrack Packing Slip 1-6 </Button>
               <Button primary disabled={twoStampUntrackedData.length == 0} onClick={() => handlePackingSlipDownload(twoStampUntrackedData, '7-12')}>Untrack Packing Slip 7-12 </Button>
@@ -150,8 +152,8 @@ export default function HomePage() {
               <Button primary disabled={fourStampUntrackedData.length == 0} onClick={() => handlePackingSlipDownload(fourStampUntrackedData, '19-20')}>Untrack Packing Slip 19-20 </Button>
               <Button primary disabled={fiveStampUntrackedData.length == 0} onClick={() => handlePackingSlipDownload(fiveStampUntrackedData, '21-29')}>Untrack Packing Slip 21-29 </Button>
               {/* <Button primary>Export Shipping</Button>
-              <Button primary>Import Tracking</Button>
-              <Button primary onClick={createOneFulfillment}>Mark as Shipped (Testing)</Button> */}
+              <Button primary>Import Tracking</Button> */}
+              {/* <Button primary onClick={createOneFulfillment}>Mark as Shipped (Testing)</Button> */}
               
             </ButtonGroup>
           </LegacyCard>
