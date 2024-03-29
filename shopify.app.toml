@@ -2,7 +2,7 @@
 
 client_id = "3d73bc918837e31e3d45291ac0289ad9"
 name = "Order Funnel"
-application_url = "https://unions-radio-books-voters.trycloudflare.com"
+application_url = "https://order-funnel-4b827c8965d9.herokuapp.com"
 embedded = true
 
 [build]
@@ -16,9 +16,7 @@ scopes = "read_merchant_managed_fulfillment_orders,read_orders,write_fulfillment
 
 [auth]
 redirect_urls = [
-  "https://unions-radio-books-voters.trycloudflare.com/auth/callback",
-  "https://unions-radio-books-voters.trycloudflare.com/auth/shopify/callback",
-  "https://unions-radio-books-voters.trycloudflare.com/api/auth/callback"
+  "https://order-funnel-4b827c8965d9.herokuapp.com/api/auth/callback"
 ]
 
 [webhooks]
