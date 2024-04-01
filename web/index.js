@@ -32,6 +32,8 @@ app.post(
 // If you are adding routes outside of the /api path, remember to
 // also add a proxy rule for them in web/frontend/vite.config.js
 
+// All endpoints after this point will require an active session
+
 app.use("/api/*", shopify.validateAuthenticatedSession());
 
 app.use(express.json());
@@ -58,9 +60,12 @@ app.get("/api/products/create", async (_req, res) => {
 });
 
 app.get("/api/orders", async (_req, res) => {
+  console.log(res.locals);
+
   const ordersData = await shopify.api.rest.Order.all({
     session: res.locals.shopify.session,
     fulfillment_status: "unfulfilled",
+    limit: 250,
     fields:
       "billing_address,current_subtotal_price,current_total_discounts,current_total_price,current_total_tax,fulfillment_status,id,line_items,name,note,order_number,shipping_address,subtotal_price,tags,total_discounts,total_line_items_price,total_price,total_tax",
   });
