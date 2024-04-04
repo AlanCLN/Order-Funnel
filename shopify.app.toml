@@ -2,7 +2,7 @@
 
 client_id = "3d73bc918837e31e3d45291ac0289ad9"
 name = "Order Funnel"
-application_url = "https://consciousness-suburban-alfred-bridge.trycloudflare.com"
+application_url = "https://timothy-contacted-left-ford.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_orders,write_fulfillments,write_orders"
 
 [auth]
 redirect_urls = [
-  "https://consciousness-suburban-alfred-bridge.trycloudflare.com/auth/callback",
-  "https://consciousness-suburban-alfred-bridge.trycloudflare.com/auth/shopify/callback",
-  "https://consciousness-suburban-alfred-bridge.trycloudflare.com/api/auth/callback"
+  "https://timothy-contacted-left-ford.trycloudflare.com/auth/callback",
+  "https://timothy-contacted-left-ford.trycloudflare.com/auth/shopify/callback",
+  "https://timothy-contacted-left-ford.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

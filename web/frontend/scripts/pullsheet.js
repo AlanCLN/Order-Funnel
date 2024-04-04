@@ -1,7 +1,7 @@
 import { makeCSV, makeURL } from "./file_scripts";
 import Pullsheet from "../classes/Pullsheet";
 
-export function createPullsheetUrl(ordersData, pullsheetCategory) {
+export function createYGOPullsheetUrl(ordersData) {
   let allVariantPullsheets = {};
 
   allVariantPullsheets["Near Mint"] = new Pullsheet("Near Mint");
@@ -20,15 +20,58 @@ export function createPullsheetUrl(ordersData, pullsheetCategory) {
 
       const lineItemVendor = line_item.vendor;
 
-      if (pullsheetCategory === "Yu-Gi-Oh!" && lineItemVendor !== "Yu-Gi-Oh!") {
+      if (lineItemVendor === "Yu-Gi-Oh!") {
+        let productName = line_item.name;
+        let qty = line_item.quantity;
+        let setName = findSetName(line_item.sku);
+        let variant = findVariant(line_item.variant_title);
+
+        let lineItem = {
+          productName,
+          qty,
+          setName,
+        };
+        let pullsheet_instance = allVariantPullsheets[variant];
+
+        pullsheet_instance.addLineItem(lineItem);
+      }
+    }
+  }
+
+  sortPullsheets(allVariantPullsheets, "Yu-Gi-Oh!");
+  const combinedPullsheet = combineAllPullsheetContent(allVariantPullsheets);
+
+  const csvString = makeCSV(combinedPullsheet);
+  const url = makeURL(csvString, "csv");
+  return url;
+}
+
+export function createOthersPullsheetUrl(ordersData) {
+  let allVariantPullsheets = {};
+
+  allVariantPullsheets["Near Mint"] = new Pullsheet("Near Mint");
+  allVariantPullsheets["Lightly Played"] = new Pullsheet("Lightly Played");
+  allVariantPullsheets["Moderately Played"] = new Pullsheet("Moderately Played");
+  allVariantPullsheets["Heavily Played"] = new Pullsheet("Heavily Played");
+  allVariantPullsheets["Damaged"] = new Pullsheet("Damaged");
+  allVariantPullsheets["Other"] = new Pullsheet("Other");
+  allVariantPullsheets["No Variant"] = new Pullsheet("No Variant");
+
+  for (let order of ordersData) {
+    for (let line_item of order.line_items) {
+      if (!line_item) {
         continue;
-      } else if (pullsheetCategory === "other" && lineItemVendor === "Yu-Gi-Oh!") {
+      }
+
+      const lineItemVendor = line_item.vendor;
+
+      if (lineItemVendor === "Yu-Gi-Oh!") {
         continue;
       }
 
       let productName = line_item.name;
       let qty = line_item.quantity;
-      let setName = findSetName(line_item.sku);
+      let setName = findSetCode(line_item.sku);
       let variant = findVariant(line_item.variant_title);
 
       let lineItem = {
@@ -42,7 +85,7 @@ export function createPullsheetUrl(ordersData, pullsheetCategory) {
     }
   }
 
-  sortPullsheets(allVariantPullsheets);
+  sortPullsheets(allVariantPullsheets, "others");
   const combinedPullsheet = combineAllPullsheetContent(allVariantPullsheets);
 
   const csvString = makeCSV(combinedPullsheet);
@@ -70,10 +113,16 @@ function combineAllPullsheetContent(allVariantPullsheets) {
   return content;
 }
 
-function sortPullsheets(allVariantPullsheets) {
+function sortPullsheets(allVariantPullsheets, vendor) {
   for (let pullsheet_instance of Object.values(allVariantPullsheets)) {
-    pullsheet_instance.sortContent();
+    pullsheet_instance.sortContent(vendor);
   }
+}
+
+export function findSetCode(sku) {
+  const split_sku = sku.split("-");
+
+  return split_sku.length >= 2 ? [split_sku[0], split_sku[1]].join("-") : sku;
 }
 
 export function findSetName(sku) {

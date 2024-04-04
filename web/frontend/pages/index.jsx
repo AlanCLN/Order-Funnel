@@ -16,7 +16,7 @@ import { useState, useEffect } from "react";
 import { ProductsCard } from "../components/ProductsCard";
 import { FetchOrdersButton } from "../components/FetchOrdersButton";
 
-import { createPullsheetUrl } from "../scripts/pullsheet";
+import { createYGOPullsheetUrl, createOthersPullsheetUrl } from "../scripts/pullsheet";
 import { createPackingSlipUrl, parseOrdersData } from "../scripts/packing_slip";
 
 
@@ -118,9 +118,17 @@ export default function HomePage() {
 
   function handlePullsheetDownload(pullsheetCategory) {
 
-    const pullsheetUrl = createPullsheetUrl(ordersData, pullsheetCategory)
+    let pullsheetUrl;
 
-    createAndClickAnchorElement(pullsheetUrl, 'pullsheet.csv')
+    if (pullsheetCategory === 'Yu-Gi-Oh!') {
+      pullsheetUrl = createYGOPullsheetUrl(ordersData)
+    } else {
+      pullsheetUrl = createOthersPullsheetUrl(ordersData)
+    }
+
+    const filename = pullsheetCategory === "Yu-Gi-Oh!" ? 'ygo' : 'other'
+
+    createAndClickAnchorElement(pullsheetUrl, `${filename}_pullsheet.csv`)
   }
 
 

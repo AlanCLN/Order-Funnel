@@ -17,7 +17,7 @@ export default class Pullsheet {
     }
   }
 
-  sortContent() {
+  sortContent(vendor) {
     let contentsArray = [];
 
     for (let productName of Object.keys(this.content)) {
@@ -26,6 +26,16 @@ export default class Pullsheet {
       let variant = this.variant;
 
       contentsArray.push({ productName, qty, setName, variant });
+    }
+
+    function sortByName(lineItemA, lineItemB) {
+      if (lineItemA.productName < lineItemB.productName) {
+        return -1;
+      } else if (lineItemA.productName > lineItemB.productName) {
+        return 1;
+      } else {
+        return 0;
+      }
     }
 
     function sortBySet(lineItemA, lineItemB) {
@@ -44,7 +54,12 @@ export default class Pullsheet {
       }
     }
 
-    contentsArray.sort(sortBySet);
+    if (vendor === "Yu-Gi-Oh!") {
+      contentsArray.sort(sortBySet);
+    } else if (vendor === "others") {
+      contentsArray.sort(sortByName);
+    }
+
     this.sortedContent = contentsArray;
   }
 

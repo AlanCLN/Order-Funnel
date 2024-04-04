@@ -1,5 +1,5 @@
 import { makeCSV, makeURL } from "./file_scripts";
-import { findSetName, findVariant } from "./pullsheet";
+import { findSetName, findVariant, findSetCode } from "./pullsheet";
 import Order from "../classes/Order";
 import LineItem from "../classes/LineItem";
 import PackingSlip from "../classes/PackingSlip";
@@ -86,8 +86,8 @@ export async function createPackingSlipUrl(order_instances) {
 
       const row = {
         qty: `${lineItemInstance.quantity}`,
-        name: `${lineItemInstance.productName}`,
-        price: `${lineItemInstance.price}`,
+        name: `${lineItemInstance.productName} - ${lineItemInstance.setCode}`,
+        price: `$${lineItemInstance.price}`,
       };
       data.push(row);
     }
@@ -107,7 +107,7 @@ export async function createPackingSlipUrl(order_instances) {
       0,
       180,
       10,
-      `Total Line Item Price: ${order_instance.getTotalLineItemsPrice()}`,
+      `Total Line Item Price: $${order_instance.getTotalLineItemsPrice()}`,
       2,
       "left"
     );
@@ -152,7 +152,9 @@ export function parseOrdersData(ordersData) {
       const lineItemPrice = line_item.price;
 
       const category = line_item.vendor === "Yu-Gi-Oh!" ? "Yu-Gi-Oh!" : "Other";
+      const sku = line_item.sku;
       const setName = findSetName(line_item.sku);
+      const setCode = findSetCode(line_item.sku);
       const variant = findVariant(line_item.variant_title);
 
       const newLineItem = new LineItem(
@@ -160,6 +162,8 @@ export function parseOrdersData(ordersData) {
         lineItemQuantity,
         lineItemPrice,
         setName,
+        setCode,
+        sku,
         variant,
         category
       );
